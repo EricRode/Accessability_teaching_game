@@ -1,6 +1,6 @@
 'use client';
 
-import { useGameStore, simulationFixMap } from '@/store/useGameStore';
+import { useGameStore, simulationFixMap, SimulationType } from '@/store/useGameStore';
 import { TaskCard } from '@/components/TaskCard';
 import { TaskSimulator } from '@/components/TaskSimulator';
 import { FixCard } from '@/components/FixCard';
@@ -61,8 +61,9 @@ export default function Home() {
   const handleStartTask = () => {
     // Apply the recommended simulation when the task starts
     if (recommendedSimulation !== 'none') {
-      setSimulation(recommendedSimulation);
+      // Update both the store state and the local state
       setActiveSimulation(recommendedSimulation);
+      setSimulation(recommendedSimulation); // This updates the Zustand store
       
       setFeedbackMessage(`This task is challenging for users with ${
         recommendedSimulation === 'color-blind' ? 'color blindness' :

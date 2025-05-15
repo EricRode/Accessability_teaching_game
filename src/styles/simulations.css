@@ -70,7 +70,7 @@
 
 /* Fix styles that counteract the simulation effects */
 .fix-color-blind {
-  filter: none;
+  /* Don't remove the filter - let labels compensate instead */
 }
 
 .fix-color-blind [aria-label] {
@@ -94,13 +94,14 @@
 }
 
 .fix-blurred-vision * {
+  /* Keep the blur but make text bigger to compensate */
   font-size: 1.2rem !important;
+  font-weight: bold !important;
 }
 
+/* Keep the simulation effects but improve contrast */
 .fix-high-contrast, .fix-low-contrast {
-  filter: none !important;
-  background-color: white !important;
-  color: black !important;
+  /* Don't remove all filters */
 }
 
 .fix-high-contrast button,
@@ -109,10 +110,14 @@
 .fix-high-contrast a {
   border: 2px solid white !important;
   outline: 1px solid black !important;
+  background-color: black !important;
+  color: white !important;
+  font-weight: bold !important;
 }
 
 .fix-low-contrast * {
   color: #000 !important;
+  font-weight: bold !important;
 }
 
 .fix-low-contrast button,
@@ -122,9 +127,10 @@
   border: 2px solid #000 !important;
 }
 
+/* Don't completely remove the zoom, just make it more manageable */
 .fix-zoomed-ui {
-  transform: none !important;
-  width: 100% !important;
+  transform: scale(1.2) !important; /* Scale down slightly but don't remove zoom completely */
+  width: 85% !important; /* Adjust width to be more manageable */
 }
 
 .fix-zoomed-ui :focus {
@@ -138,9 +144,10 @@
   padding: 8px 12px !important;
 }
 
+/* Reduce cognitive overload without removing it entirely */
 .fix-cognitive-overload {
-  animation: none !important;
-  background-image: none !important;
+  animation: shake 2s infinite !important; /* Slow down shake animation rather than removing it */
+  background-image: none !important; /* Remove the distracting background */
 }
 
 .fix-cognitive-overload .complex-content {
@@ -149,19 +156,27 @@
   font-size: 1.1rem !important;
 }
 
+/* Make screen reader mode show both the visual content and reader text */
 .fix-screen-reader {
   color: inherit !important;
-  background-color: white !important;
+  background-color: rgba(0, 0, 0, 0.7) !important; /* Semi-transparent rather than fully opaque */
 }
 
 .fix-screen-reader img {
-  opacity: 1 !important;
+  opacity: 0.7 !important; /* Semi-transparent rather than hidden */
 }
 
 .fix-screen-reader [aria-label]:after {
   content: attr(aria-label);
   color: white !important;
+  background: black !important;
+  padding: 8px !important;
   display: block !important;
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  margin-top: 4px !important;
+  border-radius: 4px !important;
 }
 
 .fix-screen-reader [alt]:after {
