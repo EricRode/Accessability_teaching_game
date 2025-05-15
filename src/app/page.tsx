@@ -83,9 +83,8 @@ export default function Home() {
   
   // Find the correct fix card for the current simulation
   const correctFixId = simulation !== 'none' ? simulationFixMap[simulation] : null;
-  const correctFixApplied = correctFixId && appliedFixCards.includes(
-    fixCards.find(card => card.id === correctFixId)?.fixesSimulation || ''
-  );
+  const correctFixCard = correctFixId ? fixCards.find(card => card.id === correctFixId) : null;
+  const correctFixApplied = Boolean(correctFixCard && appliedFixCards.includes(correctFixCard.fixesSimulation));
 
   return (
     <main className={`min-h-screen flex flex-col items-center justify-center gap-6 p-6 
