@@ -32,40 +32,33 @@
 }
 
 .cognitive-overload {
-  animation: shake 0.5s infinite;
+  animation: shake-random 0.1s infinite;
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
 }
 
-.screen-reader {
-  /* Hide all visual content except screen reader elements */
-  color: transparent !important;
-  background-color: #000 !important;
-}
-
-.screen-reader img {
-  opacity: 0 !important;
-}
-
-.screen-reader [aria-label],
-.screen-reader [alt] {
-  position: relative;
-}
-
-.screen-reader [aria-label]:after,
-.screen-reader [alt]:after {
-  content: attr(aria-label) !important;
-  color: white !important;
-  background-color: #000 !important;
-  padding: 8px !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  display: block !important;
-  z-index: 1000 !important;
-}
-
-.screen-reader [alt]:after {
-  content: attr(alt) !important;
+/* Add a more chaotic, high-amplitude shake animation */
+@keyframes shake-random {
+  0% { transform: translate(0px, 0px) rotate(0deg); }
+  5% { transform: translate(-5px, 7px) rotate(2.5deg); }
+  10% { transform: translate(8px, -6px) rotate(-1.5deg); }
+  15% { transform: translate(-7px, 4px) rotate(2deg); }
+  20% { transform: translate(6px, 6px) rotate(-2deg); }
+  25% { transform: translate(-8px, -5px) rotate(1.5deg); }
+  30% { transform: translate(7px, 5px) rotate(-1deg); }
+  35% { transform: translate(-5px, 8px) rotate(2deg); }
+  40% { transform: translate(6px, -7px) rotate(-3deg); }
+  45% { transform: translate(-8px, 5px) rotate(1deg); }
+  50% { transform: translate(7px, -4px) rotate(-1.5deg); }
+  55% { transform: translate(-6px, -6px) rotate(2.5deg); }
+  60% { transform: translate(8px, 7px) rotate(-2deg); }
+  65% { transform: translate(-7px, -5px) rotate(3deg); }
+  70% { transform: translate(6px, 5px) rotate(-1deg); }
+  75% { transform: translate(-5px, -8px) rotate(2.5deg); }
+  80% { transform: translate(7px, 7px) rotate(-3deg); }
+  85% { transform: translate(-6px, 4px) rotate(1.5deg); }
+  90% { transform: translate(8px, -6px) rotate(-2deg); }
+  95% { transform: translate(-7px, 5px) rotate(3deg); }
+  100% { transform: translate(0px, 0px) rotate(0deg); }
 }
 
 /* Fix styles that counteract the simulation effects */
@@ -146,8 +139,8 @@
 
 /* Reduce cognitive overload without removing it entirely */
 .fix-cognitive-overload {
-  animation: shake 2s infinite !important; /* Slow down shake animation rather than removing it */
-  background-image: none !important; /* Remove the distracting background */
+  animation: shake-random 3s infinite !important; /* Much slower version of the same animation */
+  background-image: none !important;
 }
 
 .fix-cognitive-overload .complex-content {
