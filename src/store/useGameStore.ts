@@ -209,12 +209,12 @@ export const useGameStore = create<GameState>((set) => ({
         feedbackMessage = `Great! The ${card.title} fix correctly addresses ${state.simulation === 'none' ? 'the current task' : `the ${state.simulation} simulation`}. The interface is now more accessible!`;
         
         return {
-          // Add to applied fixes
+          // Add to applied fixes - use the simulation type it fixes
           appliedFixCards: [...state.appliedFixCards, card.fixesSimulation],
           // Set fix as correct
           isFixCorrect: true,
-          // Disable the simulation if the fix addresses it
-          simulation: 'none',
+          // Don't disable the simulation when fix is applied 
+          // (we want to show both the simulation and fix applied)
           feedbackMessage
         };
       } else {
@@ -222,6 +222,8 @@ export const useGameStore = create<GameState>((set) => ({
         feedbackMessage = `This fix helps with ${card.fixesSimulation} barriers, but doesn't address the current ${state.simulation || 'task'}.`;
         
         return {
+          // Still apply the fix even if not perfect for current simulation
+          appliedFixCards: [...state.appliedFixCards, card.fixesSimulation],
           feedbackMessage,
           isFixCorrect: false
         };

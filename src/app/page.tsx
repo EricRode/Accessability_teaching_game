@@ -33,6 +33,10 @@ export default function Home() {
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [showInteractiveTask, setShowInteractiveTask] = useState(false);
+  const [activeSimulation, setActiveSimulation] = useState<SimulationType>('none');
+  
+  // Store the recommended simulation without immediately applying it
+  const [recommendedSimulation, setRecommendedSimulation] = useState<SimulationType>('none');
   
   // Check if we should show summary after every 5 rounds
   useEffect(() => {
@@ -41,31 +45,36 @@ export default function Home() {
     }
   }, [roundCount]);
   
-  // Automatically set a matching simulation when a new task is drawn
+  // Set the recommended simulation when a new task is drawn, but don't apply it yet
   useEffect(() => {
     if (currentTask && currentTask.affectedBy && currentTask.affectedBy.length > 0) {
       // Pick a random simulation from the ones that affect this task
       const relevantSimulations = currentTask.affectedBy;
       const randomSimulation = relevantSimulations[Math.floor(Math.random() * relevantSimulations.length)];
       
-      // Only change if we're not already in one of the relevant simulation modes
-      if (!relevantSimulations.includes(simulation)) {
-        setSimulation(randomSimulation);
-        setFeedbackMessage(`This task is challenging for users with ${
-          randomSimulation === 'color-blind' ? 'color blindness' :
-          randomSimulation === 'blurred-vision' ? 'blurred vision' :
-          randomSimulation === 'high-contrast' ? 'high contrast needs' :
-          randomSimulation === 'low-contrast' ? 'low contrast vision' :
-          randomSimulation === 'zoomed-ui' ? 'zoomed interface' :
-          randomSimulation === 'screen-reader' ? 'screen reader mode' :
-          'cognitive processing difficulties'
-        }. Find the right fix to make it accessible!`);
-      }
+      // Store this as the recommended simulation
+      setRecommendedSimulation(randomSimulation);
     }
-  }, [currentTask, setSimulation, simulation, setFeedbackMessage]);
+  }, [currentTask]);
   
   // Handle direct task simulation without needing a second click
   const handleStartTask = () => {
+    // Apply the recommended simulation when the task starts
+    if (recommendedSimulation !== 'none') {
+      setSimulation(recommendedSimulation);
+      setActiveSimulation(recommendedSimulation);
+      
+      setFeedbackMessage(`This task is challenging for users with ${
+        recommendedSimulation === 'color-blind' ? 'color blindness' :
+        recommendedSimulation === 'blurred-vision' ? 'blurred vision' :
+        recommendedSimulation === 'high-contrast' ? 'high contrast needs' :
+        recommendedSimulation === 'low-contrast' ? 'low contrast vision' :
+        recommendedSimulation === 'zoomed-ui' ? 'zoomed interface' :
+        recommendedSimulation === 'screen-reader' ? 'screen reader mode' :
+        'cognitive processing difficulties'
+      }. Find the right fix to make it accessible!`);
+    }
+    
     setShowInteractiveTask(true);
   };
   
@@ -75,26 +84,35 @@ export default function Home() {
     incrementRound();
     setTaskCompleted(true);
     setShowInteractiveTask(false);
+    // Reset active simulation when task is completed
+    setActiveSimulation('none');
+    setSimulation('none');
     setTimeout(() => {
-      drawNewTask(); // This will trigger the useEffect to choose a new simulation
+      drawNewTask(); // This will trigger the useEffect to choose a new recommended simulation
       setTaskCompleted(false);
     }, 1500);
   };
   
+  // Manual simulation change handler
+  const handleSimulationChange = (sim: SimulationType) => {
+    setSimulation(sim);
+    setActiveSimulation(sim);
+  };
+  
   // Find the correct fix card for the current simulation
-  const correctFixId = simulation !== 'none' ? simulationFixMap[simulation] : null;
+  const correctFixId = activeSimulation !== 'none' ? simulationFixMap[activeSimulation] : null;
   const correctFixCard = correctFixId ? fixCards.find(card => card.id === correctFixId) : null;
   const correctFixApplied = Boolean(correctFixCard && appliedFixCards.includes(correctFixCard.fixesSimulation));
 
   return (
     <main className={`min-h-screen flex flex-col items-center justify-center gap-6 p-6 
-      ${simulation === 'color-blind' ? 'color-blind' : ''}
-      ${simulation === 'blurred-vision' ? 'blurred-vision' : ''}
-      ${simulation === 'high-contrast' ? 'high-contrast' : ''}
-      ${simulation === 'low-contrast' ? 'low-contrast' : ''}
-      ${simulation === 'zoomed-ui' ? 'zoomed-ui' : ''}
-      ${simulation === 'screen-reader' ? 'screen-reader' : ''}
-      ${simulation === 'cognitive-overload' ? 'cognitive-overload' : ''}
+      ${activeSimulation === 'color-blind' ? 'color-blind' : ''}
+      ${activeSimulation === 'blurred-vision' ? 'blurred-vision' : ''}
+      ${activeSimulation === 'high-contrast' ? 'high-contrast' : ''}
+      ${activeSimulation === 'low-contrast' ? 'low-contrast' : ''}
+      ${activeSimulation === 'zoomed-ui' ? 'zoomed-ui' : ''}
+      ${activeSimulation === 'screen-reader' ? 'screen-reader' : ''}
+      ${activeSimulation === 'cognitive-overload' ? 'cognitive-overload' : ''}
       
       ${appliedFixCards.includes('color-blind') ? 'fix-color-blind' : ''}
       ${appliedFixCards.includes('blurred-vision') ? 'fix-blurred-vision' : ''}
@@ -122,7 +140,7 @@ export default function Home() {
         <div className="mb-4">
           <TaskSimulator 
             taskId={currentTask.id} 
-            simulation={simulation} 
+            simulation={activeSimulation} 
             onComplete={handleTaskCompletion} 
             startOpen={true}
             appliedFixes={appliedFixCards}
@@ -152,6 +170,8 @@ export default function Home() {
               drawNewTask();
               incrementRound();
               setShowInteractiveTask(false);
+              setActiveSimulation('none'); // Reset simulation on new task
+              setSimulation('none');
             }}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             aria-label="Draw a new task"
@@ -163,11 +183,9 @@ export default function Home() {
       
       <div className="w-full max-w-4xl">
         <SimulationControls 
-          currentSimulation={simulation}
-          onSelectSimulation={(sim) => {
-            setSimulation(sim);
-          }}
-          recommendedSimulations={currentTask.affectedBy}
+          currentSimulation={activeSimulation}
+          onSelectSimulation={handleSimulationChange}
+          recommendedSimulations={[recommendedSimulation]}
         />
       </div>
       
@@ -181,7 +199,7 @@ export default function Home() {
                 card={card} 
                 onPlay={() => playFixCard(card.id)}
                 isApplied={appliedFixCards.includes(card.fixesSimulation)}
-                currentSimulation={simulation}
+                currentSimulation={activeSimulation}
               />
             ))}
           </div>

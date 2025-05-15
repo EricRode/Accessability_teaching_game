@@ -90,10 +90,10 @@
   transform: translateX(-50%);
   white-space: nowrap;
   z-index: 1;
+  pointer-events: none;
 }
 
-.fix-blurred-vision {
-  filter: none !important;
+.fix-blurred-vision * {
   font-size: 1.2rem !important;
 }
 
@@ -103,8 +103,23 @@
   color: black !important;
 }
 
-.fix-high-contrast button, .fix-low-contrast button {
-  border: 2px solid black !important;
+.fix-high-contrast button,
+.fix-high-contrast input,
+.fix-high-contrast select,
+.fix-high-contrast a {
+  border: 2px solid white !important;
+  outline: 1px solid black !important;
+}
+
+.fix-low-contrast * {
+  color: #000 !important;
+}
+
+.fix-low-contrast button,
+.fix-low-contrast input,
+.fix-low-contrast select {
+  background-color: #fff !important;
+  border: 2px solid #000 !important;
 }
 
 .fix-zoomed-ui {
@@ -113,8 +128,14 @@
 }
 
 .fix-zoomed-ui :focus {
-  outline: 3px solid blue !important;
+  outline: 3px solid #0077FF !important;
   outline-offset: 2px !important;
+}
+
+.fix-zoomed-ui button,
+.fix-zoomed-ui input,
+.fix-zoomed-ui select {
+  padding: 8px 12px !important;
 }
 
 .fix-cognitive-overload {
@@ -135,6 +156,18 @@
 
 .fix-screen-reader img {
   opacity: 1 !important;
+}
+
+.fix-screen-reader [aria-label]:after {
+  content: attr(aria-label);
+  color: white !important;
+  display: block !important;
+}
+
+.fix-screen-reader [alt]:after {
+  content: attr(alt);
+  color: white !important;
+  display: block !important;
 }
 
 @keyframes shake {
