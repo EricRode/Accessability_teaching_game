@@ -9,7 +9,7 @@
 }
 
 .blurred-vision {
-  filter: blur(3px);
+  filter: blur(2px);
 }
 
 .high-contrast {
